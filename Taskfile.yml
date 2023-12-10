@@ -1,0 +1,27 @@
+version: '3'
+
+tasks:
+  generate:
+    cmds:
+      - go generate ./...
+
+  assets:
+    cmds:
+      - mkdir -p assets/js
+      - cp node_modules/htmx.org/dist/htmx.min.js assets/js
+
+  build:
+    desc: Builds the service
+    deps:
+      - generate
+      - assets
+    cmds:
+      - go build .
+    
+  run:
+    desc: Runs the service
+    deps:
+      - generate
+      - assets
+    cmds:
+      - go run .

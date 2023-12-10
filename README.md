@@ -1,0 +1,1 @@
+# Example service for using templ with htmx written in Go
