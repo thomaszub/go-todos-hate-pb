@@ -1,9 +1,29 @@
 package templates
 
-templ Todos() {
-	@layout(content())
+import "github.com/thomaszub/go-todos-templ-htmx/model"
+import "strconv"
+
+templ Todos(todos []model.ToDo) {
+	@layout(content(todos))
 }
 
-templ content() {
-	<div>Hello</div>
+templ content(todos []model.ToDo) {
+	<h1>To-Do's</h1>
+	<ul class={ todoList() }>
+		for _, todo := range todos {
+			<li class={ checkbox() }>
+				<input type="checkbox" id="scales" name="scales" checked?={ todo.Done }/>
+				{ todo.Content } - { strconv.FormatBool(todo.Done) }
+			</li>
+		}
+	</ul>
+}
+
+css todoList() {
+	margin: 0;
+	padding: 0;
+}
+
+css checkbox() {
+	list-style: none;
 }
