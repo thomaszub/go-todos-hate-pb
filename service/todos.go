@@ -1,14 +1,18 @@
 package service
 
-import "github.com/thomaszub/go-todos-templ-htmx/model"
+import (
+	"fmt"
+
+	"github.com/thomaszub/go-todos-templ-htmx/model"
+)
 
 type ToDos struct {
-	todos []model.ToDo
+	todos []*model.ToDo
 }
 
 func NewToDos() *ToDos {
 	return &ToDos{
-		todos: []model.ToDo{
+		todos: []*model.ToDo{
 			{
 				Id:      1,
 				Content: "Milk",
@@ -24,5 +28,19 @@ func NewToDos() *ToDos {
 }
 
 func (t *ToDos) GetAll() []model.ToDo {
-	return t.todos
+	todos := []model.ToDo{}
+	for _, todo := range t.todos {
+		todos = append(todos, *todo)
+	}
+	return todos
+}
+
+func (t *ToDos) SwapDone(id int) (model.ToDo, error) {
+	for _, todo := range t.todos {
+		if id == todo.Id {
+			todo.Done = !todo.Done
+			return *todo, nil
+		}
+	}
+	return model.ToDo{}, fmt.Errorf("ToDo %d not found", id)
 }

@@ -1,7 +1,7 @@
 package templates
 
 import "github.com/thomaszub/go-todos-templ-htmx/model"
-import "strconv"
+import "fmt"
 
 templ Todos(todos []model.ToDo) {
 	@layout(content(todos))
@@ -11,12 +11,16 @@ templ content(todos []model.ToDo) {
 	<h1>To-Do's</h1>
 	<ul class={ todoList() }>
 		for _, todo := range todos {
-			<li class={ checkbox() }>
-				<input type="checkbox" id="scales" name="scales" checked?={ todo.Done }/>
-				{ todo.Content } - { strconv.FormatBool(todo.Done) }
+			<li class={ checkboxStyle() }>
+				@Checkbox(todo)
+				{ todo.Content }
 			</li>
 		}
 	</ul>
+}
+
+templ Checkbox(todo model.ToDo) {
+	<input hx-patch={ fmt.Sprintf("/%d/done", todo.Id) } type="checkbox" id="scales" name="scales" checked?={ todo.Done }/>
 }
 
 css todoList() {
@@ -24,6 +28,6 @@ css todoList() {
 	padding: 0;
 }
 
-css checkbox() {
+css checkboxStyle() {
 	list-style: none;
 }
