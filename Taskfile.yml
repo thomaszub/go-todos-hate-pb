@@ -25,3 +25,8 @@ tasks:
       - assets
     cmds:
       - go run .
+
+  run:dev:
+    desc: Runs the service with watch enabled
+    cmds:
+      - templ generate --watch --cmd="go run ."
