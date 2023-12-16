@@ -1,4 +1,4 @@
 /node_modules
 /**/*_templ.go
-/assets/js/**
+/ui/assets/js/**
 /go-todos-templ-htmx
