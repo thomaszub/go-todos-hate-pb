@@ -2,6 +2,7 @@
   "name": "go-todos-templ-htmx",
   "private": "true",
   "dependencies": {
+    "@picocss/pico": "2.0.3",
     "htmx.org": "1.9.9"
   }
 }

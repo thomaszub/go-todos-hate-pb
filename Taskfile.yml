@@ -8,7 +8,9 @@ tasks:
   assets:
     cmds:
       - mkdir -p ui/assets/js
+      - mkdir -p ui/assets/css
       - cp node_modules/htmx.org/dist/htmx.min.js ui/assets/js
+      - cp node_modules/@picocss/pico/css/pico.min.css ui/assets/css
 
   build:
     desc: Builds the service
