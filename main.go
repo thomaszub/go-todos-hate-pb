@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 
@@ -11,12 +12,13 @@ import (
 )
 
 func main() {
+	port := 8080
 	r := chi.NewRouter()
 	r.Use(middleware.Logger)
 
 	s := service.NewToDos()
 	c := ui.NewToDos(s)
 	c.Register(r)
-
-	log.Fatal(http.ListenAndServe(":8080", r))
+	log.Printf("Listening on port %d", port)
+	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%d", port), r))
 }
