@@ -17,6 +17,7 @@ func main() {
 	port := 8080
 	r := chi.NewRouter()
 	r.Use(middleware.Logger)
+	r.Use(middleware.Compress(5))
 	h := templ.NewCSSMiddleware(r, templates.CheckboxStyle())
 
 	s := service.NewToDos()
