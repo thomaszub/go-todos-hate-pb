@@ -45,5 +45,5 @@ func (t *ToDos) SwapDone(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusNotFound)
 		w.Write([]byte(fmt.Sprintf("No To-Do found for id %d", id)))
 	}
-	templates.Checkbox(todo)
+	templates.Todo(todo).Render(r.Context(), w)
 }

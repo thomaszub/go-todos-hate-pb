@@ -2,6 +2,7 @@ package templates
 
 import "github.com/thomaszub/go-todos-templ-htmx/model"
 import "fmt"
+import "strconv"
 
 templ Todos(todos []model.ToDo) {
 	<!DOCTYPE html>
@@ -24,17 +25,21 @@ templ content(todos []model.ToDo) {
 	<main class="container">
 		<ul class={ todoList() }>
 			for _, todo := range todos {
-				<li class={ checkboxStyle() }>
-					@Checkbox(todo)
-					{ todo.Content }
-				</li>
+				@Todo(todo)
 			}
 		</ul>
 	</main>
 }
 
-templ Checkbox(todo model.ToDo) {
-	<input hx-patch={ fmt.Sprintf("/%d/done", todo.Id) } type="checkbox" id="scales" name="scales" checked?={ todo.Done }/>
+templ Todo(todo model.ToDo) {
+	<li id={ todoId(todo.Id) } class={ checkboxStyle() }>
+		<input hx-patch={ fmt.Sprintf("/%d/done", todo.Id) } hx-swap="outerHTML" hx-target={ "#" + todoId(todo.Id) } type="checkbox" id="scales" name="scales" checked?={ todo.Done }/>
+		{ todo.Content }
+	</li>
+}
+
+func todoId(id int) string {
+	return "todo_" + strconv.Itoa(id)
 }
 
 css todoList() {
