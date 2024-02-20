@@ -18,15 +18,19 @@ templ Todos(todos []model.ToDo) {
 }
 
 templ content(todos []model.ToDo) {
-	<h1>To-Do's</h1>
-	<ul class={ todoList() }>
-		for _, todo := range todos {
-			<li class={ checkboxStyle() }>
-				@Checkbox(todo)
-				{ todo.Content }
-			</li>
-		}
-	</ul>
+	<header class="container">
+		<h1>To-Do's</h1>
+	</header>
+	<main class="container">
+		<ul class={ todoList() }>
+			for _, todo := range todos {
+				<li class={ checkboxStyle() }>
+					@Checkbox(todo)
+					{ todo.Content }
+				</li>
+			}
+		</ul>
+	</main>
 }
 
 templ Checkbox(todo model.ToDo) {
