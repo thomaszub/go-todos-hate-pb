@@ -4,7 +4,17 @@ import "github.com/thomaszub/go-todos-templ-htmx/model"
 import "fmt"
 
 templ Todos(todos []model.ToDo) {
-	@layout(content(todos))
+	<!DOCTYPE html>
+	<html>
+		<head>
+			<title>go-todos-templ-htmx</title>
+			<link rel="stylesheet" href="/assets/css/pico.min.css"/>
+			<script src="/assets/js/htmx.min.js"></script>
+		</head>
+		<body>
+			@content(todos)
+		</body>
+	</html>
 }
 
 templ content(todos []model.ToDo) {
