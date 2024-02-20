@@ -10,6 +10,7 @@ templ Todos(todos []model.ToDo) {
 		<head>
 			<title>go-todos-templ-htmx</title>
 			<link rel="stylesheet" href="/assets/css/pico.min.css"/>
+			<link rel="stylesheet" href="/styles/templ.css"/>
 			<script src="/assets/js/htmx.min.js"></script>
 		</head>
 		<body>
@@ -32,7 +33,7 @@ templ content(todos []model.ToDo) {
 }
 
 templ Todo(todo model.ToDo) {
-	<li id={ todoId(todo.Id) } class={ checkboxStyle() }>
+	<li id={ todoId(todo.Id) } class={ CheckboxStyle() }>
 		<input hx-patch={ fmt.Sprintf("/%d/done", todo.Id) } hx-swap="outerHTML" hx-target={ "#" + todoId(todo.Id) } type="checkbox" id="scales" name="scales" checked?={ todo.Done }/>
 		{ todo.Content }
 	</li>
@@ -47,6 +48,6 @@ css todoList() {
 	padding: 0;
 }
 
-css checkboxStyle() {
+css CheckboxStyle() {
 	list-style: none;
 }
