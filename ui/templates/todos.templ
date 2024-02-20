@@ -14,12 +14,12 @@ templ Todos(todos []model.ToDo) {
 			<script src="/assets/js/htmx.min.js"></script>
 		</head>
 		<body>
-			@content(todos)
+			@body(todos)
 		</body>
 	</html>
 }
 
-templ content(todos []model.ToDo) {
+templ body(todos []model.ToDo) {
 	<header class="container">
 		<h1>To-Do's</h1>
 	</header>
@@ -35,8 +35,16 @@ templ content(todos []model.ToDo) {
 templ Todo(todo model.ToDo) {
 	<li id={ todoId(todo.Id) } class={ CheckboxStyle() }>
 		<input hx-patch={ fmt.Sprintf("/%d/done", todo.Id) } hx-swap="outerHTML" hx-target={ "#" + todoId(todo.Id) } type="checkbox" id="scales" name="scales" checked?={ todo.Done }/>
-		{ todo.Content }
+		@content(todo)
 	</li>
+}
+
+templ content(todo model.ToDo) {
+	if todo.Done {
+		<s>{ todo.Content }</s>
+	} else {
+		{ todo.Content }
+	}
 }
 
 func todoId(id int) string {
