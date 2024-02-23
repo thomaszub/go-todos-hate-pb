@@ -44,3 +44,13 @@ func (t *ToDos) SwapDone(id int) (model.ToDo, error) {
 	}
 	return model.ToDo{}, fmt.Errorf("ToDo %d not found", id)
 }
+
+func (t *ToDos) Delete(id int) error {
+	for i, todo := range t.todos {
+		if id == todo.Id {
+			t.todos = append(t.todos[:i], t.todos[i+1:]...)
+			return nil
+		}
+	}
+	return fmt.Errorf("ToDo %d not found", id)
+}

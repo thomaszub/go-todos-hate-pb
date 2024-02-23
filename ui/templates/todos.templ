@@ -42,6 +42,7 @@ templ Todo(todo model.ToDo) {
 templ content(todo model.ToDo) {
 	if todo.Done {
 		<s>{ todo.Content }</s>
+		<input class={ DeleteBin() } type="image" src="/assets/images/bin.svg" hx-trigger="click" hx-delete={ fmt.Sprintf("/%d", todo.Id) } hx-swap="delete" hx-target={ "#" + todoId(todo.Id) }/>
 	} else {
 		{ todo.Content }
 	}
@@ -58,4 +59,14 @@ css todoList() {
 
 css CheckboxStyle() {
 	list-style: none;
+}
+
+css DeleteBin() {
+	margin: 0 !important;
+	margin-left: 4px !important;
+	padding: 1px !important;
+	width: fit-content !important;
+	height: fit-content !important;
+	border-radius: 40%;
+	vertical-align: bottom;
 }

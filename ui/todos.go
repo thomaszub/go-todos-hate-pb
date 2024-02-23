@@ -25,6 +25,7 @@ func NewToDos(service *service.ToDos) ToDos {
 func (t *ToDos) Register(r chi.Router) {
 	r.Get("/", t.Get)
 	r.Patch("/{id}/done", t.SwapDone)
+	r.Delete("/{id}", t.Delete)
 	r.Route("/assets", func(r chi.Router) {
 		r.Get("/*", http.FileServer(http.FS(assets)).ServeHTTP)
 	})
@@ -46,4 +47,18 @@ func (t *ToDos) SwapDone(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte(fmt.Sprintf("No To-Do found for id %d", id)))
 	}
 	templates.Todo(todo).Render(r.Context(), w)
+}
+
+func (t *ToDos) Delete(w http.ResponseWriter, r *http.Request) {
+	id, err := strconv.Atoi(chi.URLParam(r, "id"))
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		w.Write([]byte(err.Error()))
+	}
+	err = t.service.Delete(id)
+	if err != nil {
+		w.WriteHeader(http.StatusNotFound)
+		w.Write([]byte(fmt.Sprintf("No To-Do found for id %d", id)))
+	}
+	w.WriteHeader(http.StatusOK)
 }

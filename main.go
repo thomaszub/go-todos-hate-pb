@@ -18,7 +18,7 @@ func main() {
 	r := chi.NewRouter()
 	r.Use(middleware.Logger)
 	r.Use(middleware.Compress(5))
-	h := templ.NewCSSMiddleware(r, templates.CheckboxStyle())
+	h := templ.NewCSSMiddleware(r, templates.CheckboxStyle(), templates.DeleteBin())
 
 	s := service.NewToDos()
 	c := ui.NewToDos(s)
