@@ -40,11 +40,13 @@ func (t *ToDos) SwapDone(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		w.Write([]byte(err.Error()))
+		return
 	}
 	todo, err := t.service.SwapDone(id)
 	if err != nil {
 		w.WriteHeader(http.StatusNotFound)
 		w.Write([]byte(fmt.Sprintf("No To-Do found for id %d", id)))
+		return
 	}
 	templates.Todo(todo).Render(r.Context(), w)
 }
@@ -54,11 +56,13 @@ func (t *ToDos) Delete(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		w.Write([]byte(err.Error()))
+		return
 	}
 	err = t.service.Delete(id)
 	if err != nil {
 		w.WriteHeader(http.StatusNotFound)
 		w.Write([]byte(fmt.Sprintf("No To-Do found for id %d", id)))
+		return
 	}
 	w.WriteHeader(http.StatusOK)
 }
