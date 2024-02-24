@@ -29,6 +29,7 @@ func (t *ToDos) Register(r chi.Router) {
 	r.Route("/assets", func(r chi.Router) {
 		r.Get("/*", http.FileServer(http.FS(assets)).ServeHTTP)
 	})
+	r.Post("/", t.Add)
 }
 
 func (t *ToDos) Get(w http.ResponseWriter, r *http.Request) {
@@ -65,4 +66,15 @@ func (t *ToDos) Delete(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	w.WriteHeader(http.StatusOK)
+}
+
+func (t *ToDos) Add(w http.ResponseWriter, r *http.Request) {
+	content := r.FormValue("newtodo")
+	if content == "" {
+		w.WriteHeader(http.StatusBadRequest)
+		w.Write([]byte("No To-Do content is set"))
+		return
+	}
+	todo := t.service.Add(content)
+	templates.Todo(todo).Render(r.Context(), w)
 }

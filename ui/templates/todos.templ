@@ -24,17 +24,45 @@ templ body(todos []model.ToDo) {
 		<h1>To-Do's</h1>
 	</header>
 	<main class="container">
-		<ul class={ todoList() }>
-			for _, todo := range todos {
-				@Todo(todo)
-			}
-		</ul>
+		<section>
+			<ul id="todo-list" class={ todoList() }>
+				for _, todo := range todos {
+					@Todo(todo)
+				}
+			</ul>
+		</section>
+		<section>
+			<form>
+				<fieldset role="group">
+					<input
+						type="submit"
+						hx-post="/"
+						hx-swap="beforeend"
+						hx-target="#todo-list"
+						value="Add"
+					/>
+					<input
+						type="text"
+						name="newtodo"
+						placeholder="Add your To-Do"
+					/>
+				</fieldset>
+			</form>
+		</section>
 	</main>
 }
 
 templ Todo(todo model.ToDo) {
 	<li id={ todoId(todo.Id) } class={ CheckboxStyle() }>
-		<input hx-patch={ fmt.Sprintf("/%d/done", todo.Id) } hx-swap="outerHTML" hx-target={ "#" + todoId(todo.Id) } type="checkbox" id="scales" name="scales" checked?={ todo.Done }/>
+		<input
+			hx-patch={ fmt.Sprintf("/%d/done", todo.Id) }
+			hx-swap="outerHTML"
+			hx-target={ "#" + todoId(todo.Id) }
+			type="checkbox"
+			id="scales"
+			name="scales"
+			checked?={ todo.Done }
+		/>
 		@content(todo)
 	</li>
 }
@@ -42,7 +70,15 @@ templ Todo(todo model.ToDo) {
 templ content(todo model.ToDo) {
 	if todo.Done {
 		<s>{ todo.Content }</s>
-		<input class={ DeleteBin() } type="image" src="/assets/images/bin.svg" hx-trigger="click" hx-delete={ fmt.Sprintf("/%d", todo.Id) } hx-swap="delete" hx-target={ "#" + todoId(todo.Id) }/>
+		<input
+			class={ DeleteBin() }
+			type="image"
+			src="/assets/images/bin.svg"
+			hx-trigger="click"
+			hx-delete={ fmt.Sprintf("/%d", todo.Id) }
+			hx-swap="delete"
+			hx-target={ "#" + todoId(todo.Id) }
+		/>
 	} else {
 		{ todo.Content }
 	}

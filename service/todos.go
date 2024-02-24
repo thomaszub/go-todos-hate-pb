@@ -7,23 +7,14 @@ import (
 )
 
 type ToDos struct {
-	todos []*model.ToDo
+	todos  []*model.ToDo
+	nextId int
 }
 
 func NewToDos() *ToDos {
 	return &ToDos{
-		todos: []*model.ToDo{
-			{
-				Id:      1,
-				Content: "Milk",
-				Done:    false,
-			},
-			{
-				Id:      2,
-				Content: "Bread",
-				Done:    true,
-			},
-		},
+		todos:  []*model.ToDo{},
+		nextId: 1,
 	}
 }
 
@@ -53,4 +44,15 @@ func (t *ToDos) Delete(id int) error {
 		}
 	}
 	return fmt.Errorf("ToDo %d not found", id)
+}
+
+func (t *ToDos) Add(content string) model.ToDo {
+	todo := model.ToDo{
+		Id:      t.nextId,
+		Content: content,
+		Done:    false,
+	}
+	t.nextId += 1
+	t.todos = append(t.todos, &todo)
+	return todo
 }
