@@ -6,7 +6,6 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/go-chi/chi/v5"
 	"github.com/thomaszub/go-todos-templ-htmx/service"
 	"github.com/thomaszub/go-todos-templ-htmx/ui/templates"
 )
@@ -22,14 +21,12 @@ func NewToDos(service *service.ToDos) ToDos {
 	return ToDos{service}
 }
 
-func (t *ToDos) Register(r chi.Router) {
-	r.Get("/", t.Get)
-	r.Patch("/{id}/done", t.SwapDone)
-	r.Delete("/{id}", t.Delete)
-	r.Route("/assets", func(r chi.Router) {
-		r.Get("/*", http.FileServer(http.FS(assets)).ServeHTTP)
-	})
-	r.Post("/", t.Add)
+func (t *ToDos) Register(mux *http.ServeMux) {
+	mux.HandleFunc("GET /", t.Get)
+	mux.HandleFunc("PATCH /{id}/done", t.SwapDone)
+	mux.HandleFunc("DELETE /{id}", t.Delete)
+	mux.Handle("GET /assets/{rest...}", http.FileServer(http.FS(assets)))
+	mux.HandleFunc("POST /", t.Add)
 }
 
 func (t *ToDos) Get(w http.ResponseWriter, r *http.Request) {
@@ -37,7 +34,7 @@ func (t *ToDos) Get(w http.ResponseWriter, r *http.Request) {
 }
 
 func (t *ToDos) SwapDone(w http.ResponseWriter, r *http.Request) {
-	id, err := strconv.Atoi(chi.URLParam(r, "id"))
+	id, err := strconv.Atoi(r.PathValue("id"))
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		w.Write([]byte(err.Error()))
@@ -53,7 +50,7 @@ func (t *ToDos) SwapDone(w http.ResponseWriter, r *http.Request) {
 }
 
 func (t *ToDos) Delete(w http.ResponseWriter, r *http.Request) {
-	id, err := strconv.Atoi(chi.URLParam(r, "id"))
+	id, err := strconv.Atoi(r.PathValue("id"))
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		w.Write([]byte(err.Error()))
