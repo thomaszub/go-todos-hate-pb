@@ -1,4 +1,4 @@
-module github.com/thomaszub/go-todos-templ-htmx
+module github.com/thomaszub/go-todos-hate-pb
 
 go 1.22
 

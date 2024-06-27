@@ -3,7 +3,7 @@ package service
 import (
 	"fmt"
 
-	"github.com/thomaszub/go-todos-templ-htmx/model"
+	"github.com/thomaszub/go-todos-hate-pb/model"
 )
 
 type ToDos struct {

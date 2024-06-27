@@ -6,8 +6,8 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/thomaszub/go-todos-templ-htmx/service"
-	"github.com/thomaszub/go-todos-templ-htmx/ui/templates"
+	"github.com/thomaszub/go-todos-hate-pb/service"
+	"github.com/thomaszub/go-todos-hate-pb/ui/templates"
 )
 
 //go:embed assets

@@ -7,9 +7,9 @@ import (
 
 	"github.com/a-h/templ"
 	"github.com/go-chi/chi/v5/middleware"
-	"github.com/thomaszub/go-todos-templ-htmx/service"
-	"github.com/thomaszub/go-todos-templ-htmx/ui"
-	"github.com/thomaszub/go-todos-templ-htmx/ui/templates"
+	"github.com/thomaszub/go-todos-hate-pb/service"
+	"github.com/thomaszub/go-todos-hate-pb/ui"
+	"github.com/thomaszub/go-todos-hate-pb/ui/templates"
 )
 
 func main() {

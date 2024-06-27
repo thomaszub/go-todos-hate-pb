@@ -1,14 +1,16 @@
 package templates
 
-import "github.com/thomaszub/go-todos-templ-htmx/model"
-import "fmt"
-import "strconv"
+import (
+	"fmt"
+	"github.com/thomaszub/go-todos-hate-pb/model"
+	"strconv"
+)
 
 templ Todos(todos []model.ToDo) {
 	<!DOCTYPE html>
 	<html>
 		<head>
-			<title>go-todos-templ-htmx</title>
+			<title>go-todos-hate-pb</title>
 			<link rel="stylesheet" href="/assets/css/pico.min.css"/>
 			<link rel="stylesheet" href="/styles/templ.css"/>
 			<script src="/assets/js/htmx.min.js"></script>
