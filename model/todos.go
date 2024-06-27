@@ -1,7 +1,7 @@
 package model
 
 type ToDo struct {
-	Id      int
+	Id      string
 	Content string
 	Done    bool
 }

@@ -4,8 +4,9 @@ import (
 	"embed"
 	"fmt"
 	"net/http"
-	"strconv"
 
+	"github.com/a-h/templ"
+	"github.com/labstack/echo/v5"
 	"github.com/thomaszub/go-todos-hate-pb/service"
 	"github.com/thomaszub/go-todos-hate-pb/ui/templates"
 )
@@ -21,57 +22,64 @@ func NewToDos(service *service.ToDos) ToDos {
 	return ToDos{service}
 }
 
-func (t *ToDos) Register(mux *http.ServeMux) {
-	mux.HandleFunc("GET /", t.Get)
-	mux.HandleFunc("PATCH /{id}/done", t.SwapDone)
-	mux.HandleFunc("DELETE /{id}", t.Delete)
-	mux.Handle("GET /assets/{rest...}", http.FileServer(http.FS(assets)))
-	mux.HandleFunc("POST /", t.Add)
+func (t *ToDos) Register(router *echo.Echo) {
+	router.Use(echo.WrapMiddleware(func(h http.Handler) http.Handler {
+		return templ.NewCSSMiddleware(h, templates.CheckboxStyle(), templates.DeleteBin())
+	}))
+	router.GET("/", t.Get)
+	router.PATCH("/:id/done", t.SwapDone)
+	router.DELETE("/:id", t.Delete)
+	router.StaticFS("/assets", echo.MustSubFS(assets, "assets"))
+	router.POST("/", t.Add)
 }
 
-func (t *ToDos) Get(w http.ResponseWriter, r *http.Request) {
-	templates.Todos(t.service.GetAll()).Render(r.Context(), w)
-}
-
-func (t *ToDos) SwapDone(w http.ResponseWriter, r *http.Request) {
-	id, err := strconv.Atoi(r.PathValue("id"))
+func (t *ToDos) Get(c echo.Context) error {
+	todos, err := t.service.GetAll()
 	if err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		w.Write([]byte(err.Error()))
-		return
+		return c.String(http.StatusInternalServerError, err.Error())
+	}
+	return renderTemplate(c, http.StatusOK, templates.Todos(todos))
+}
+
+func (t *ToDos) SwapDone(c echo.Context) error {
+	id := c.PathParam("id")
+	if id == "" {
+		return c.String(http.StatusBadRequest, "no To-Do id is set")
 	}
 	todo, err := t.service.SwapDone(id)
 	if err != nil {
-		w.WriteHeader(http.StatusNotFound)
-		w.Write([]byte(fmt.Sprintf("No To-Do found for id %d", id)))
-		return
+		return c.String(http.StatusNotFound, fmt.Sprintf("no To-Do found for id %s", id))
 	}
-	templates.Todo(todo).Render(r.Context(), w)
+	return renderTemplate(c, http.StatusOK, templates.Todo(todo))
 }
 
-func (t *ToDos) Delete(w http.ResponseWriter, r *http.Request) {
-	id, err := strconv.Atoi(r.PathValue("id"))
-	if err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		w.Write([]byte(err.Error()))
-		return
+func (t *ToDos) Delete(c echo.Context) error {
+	id := c.PathParam("id")
+	if id == "" {
+		return c.String(http.StatusBadRequest, "no To-Do id is set")
 	}
-	err = t.service.Delete(id)
+	err := t.service.Delete(id)
 	if err != nil {
-		w.WriteHeader(http.StatusNotFound)
-		w.Write([]byte(fmt.Sprintf("No To-Do found for id %d", id)))
-		return
+		return c.String(http.StatusNotFound, fmt.Sprintf("no To-Do found for id %s", id))
 	}
-	w.WriteHeader(http.StatusOK)
+	return c.String(http.StatusOK, "")
 }
 
-func (t *ToDos) Add(w http.ResponseWriter, r *http.Request) {
-	content := r.FormValue("newtodo")
+func (t *ToDos) Add(c echo.Context) error {
+	content := c.FormValue("newtodo")
 	if content == "" {
-		w.WriteHeader(http.StatusBadRequest)
-		w.Write([]byte("No To-Do content is set"))
-		return
+		return c.String(http.StatusBadRequest, "no To-Do content is set")
 	}
-	todo := t.service.Add(content)
-	templates.Todo(todo).Render(r.Context(), w)
+	todo, err := t.service.Add(content)
+	if err != nil {
+		return c.String(http.StatusInternalServerError, err.Error())
+	}
+	return renderTemplate(c, http.StatusOK, templates.Todo(todo))
+}
+
+func renderTemplate(ctx echo.Context, status int, temp templ.Component) error {
+	buf := templ.GetBuffer()
+	defer templ.ReleaseBuffer(buf)
+	temp.Render(ctx.Request().Context(), buf)
+	return ctx.HTML(status, buf.String())
 }
