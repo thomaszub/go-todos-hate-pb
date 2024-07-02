@@ -33,7 +33,7 @@ templ body(todos []model.ToDo) {
 			</ul>
 		</section>
 		<section>
-			<form>
+			<form hx-on::after-request="this.reset()">
 				<fieldset role="group">
 					<input
 						type="submit"
